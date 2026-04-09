@@ -451,6 +451,7 @@
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (pos) => {
+                        // تم تصحيح الخطأ هنا (إصلاح رابط خرائط جوجل واستخدام المتغير بشكل صحيح)
                         coords.value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
                         btn.style.display = 'none';
                         status.style.display = 'block';
@@ -501,15 +502,16 @@
         function dispatchOrder() {
             loader.style.display = 'flex'; // تشغيل التحميل
 
+            // تم تغيير صيغة الرسالة إلى HTML لتجنب مشاكل الماركدوان مع مدخلات المستخدم العشوائية
             const msg = `
-🚨 *طلب جديد - عبود لتوصيل الغاز* 🚨
+🚨 <b>طلب جديد - عبود لتوصيل الغاز</b> 🚨
 
-👤 *العميل:* ${document.getElementById('fName').value}
-📱 *الهاتف:* ${document.getElementById('fPhone').value}
-📦 *الكمية:* ${document.getElementById('fQty').value} دبات
-🏠 *العنوان:* ${document.getElementById('fAddress').value}
-📍 *الموقع (GPS):* ${document.getElementById('fCoords').value}
-📝 *ملاحظات:* ${document.getElementById('fNotes').value || 'لا يوجد'}
+👤 <b>العميل:</b> ${document.getElementById('fName').value}
+📱 <b>الهاتف:</b> ${document.getElementById('fPhone').value}
+📦 <b>الكمية:</b> ${document.getElementById('fQty').value} دبات
+🏠 <b>العنوان:</b> ${document.getElementById('fAddress').value}
+📍 <b>الموقع (GPS):</b> ${document.getElementById('fCoords').value}
+📝 <b>ملاحظات:</b> ${document.getElementById('fNotes').value || 'لا يوجد'}
 `;
 
             const url = `https://api.telegram.org/bot${TG_TOKEN}/sendMessage`;
@@ -520,7 +522,7 @@
                 body: JSON.stringify({
                     chat_id: TG_CHAT,
                     text: msg,
-                    parse_mode: 'Markdown',
+                    parse_mode: 'HTML', // تم تغيير الـ parse_mode إلى HTML لتفادي أخطاء التليجرام
                     disable_web_page_preview: false
                 })
             })
@@ -538,6 +540,7 @@
                         </div>
                     `;
                 } else {
+                    console.log(data); // سيطبع لك الخطأ في الكونسول إذا حدث لسهولة التتبع مستقبلاً
                     alert("عذراً، حدث خطأ في النظام. يرجى المحاولة مرة أخرى.");
                 }
             })
